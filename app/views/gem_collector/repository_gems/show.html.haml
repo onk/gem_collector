@@ -7,6 +7,8 @@
 
 %h2 Repositories using #{@gem_name}
 
+%h3 Latest version: #{@latest_gem_version&.version}
+
 %p
   = form_tag('', method: :get) do |f|
     = label_tag(:from_version, 'From version:')
@@ -21,12 +23,18 @@
       %th Repository
       %th Path
       %th Version
+      %th Status
   %tbody
     - @repositories.each do |repository|
       %tr
         %td= link_to(repository.canonical_name, repository_path(repository.id))
         %td= link_to(repository.gem_path, repository.url(repository.gem_path))
         %td= repository.gem_version
+        %td
+          - status = GemCollector::RepositoryGem.status(repository.gem_version, @latest_gem_version&.version)
+          %span{style: "color: ##{status == GemCollector::RepositoryGem::Status::LATEST   ? "5cb85c" : "f0f0f2"};"}●
+          %span{style: "color: ##{status == GemCollector::RepositoryGem::Status::BEHIND   ? "f0ad4e" : "f0f0f2"};"}●
+          %span{style: "color: ##{status == GemCollector::RepositoryGem::Status::OUTDATED ? "d9534f" : "f0f0f2"};"}●
 
 %hr
 

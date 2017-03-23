@@ -13,6 +13,7 @@ class GemCollector::RepositoryGemsController < GemCollector::ApplicationControll
   def show
     @gem_name = params[:name]
     @repositories = GemCollector::Repository.find_by_dependent_gem(@gem_name, from_version: params[:from_version], to_version: params[:to_version])
+    @latest_gem_version = GemCollector::LatestGemVersion.find_by(gem_name: @gem_name)
   end
 
   private def order_by_popularity?
